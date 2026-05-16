@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: 250 250 251;
+  --surface: 255 255 255;
+  --elevated: 255 255 255;
+  --border: 229 231 235;
+  --fg: 17 18 23;
+  --muted: 107 114 128;
+  --brand: 99 102 241;
+  --brand-soft: 238 242 255;
+}
+
+.dark {
+  --bg: 9 9 14;
+  --surface: 18 19 26;
+  --elevated: 24 25 34;
+  --border: 39 41 54;
+  --fg: 237 238 245;
+  --muted: 148 152 170;
+  --brand: 129 140 248;
+  --brand-soft: 30 27 56;
+}
+
+* {
+  border-color: rgb(var(--border));
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+}
+
+body {
+  background-color: rgb(var(--bg));
+  color: rgb(var(--fg));
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgb(var(--brand) / 0.25);
+}
+
+/* Subtle scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--border));
+  border-radius: 999px;
+  border: 2px solid rgb(var(--bg));
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--muted) / 0.5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
