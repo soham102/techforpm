@@ -38,14 +38,14 @@ export function AnimatedFlow({ nodes, loop = true }: AnimatedFlowProps) {
 
   return (
     <>
-      <div className="flex flex-col items-stretch gap-3 md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col items-stretch gap-3 md:flex-row md:items-stretch md:justify-between">
         {nodes.map((node, i) => {
           const Icon = getIcon(node.icon);
           const clickable = Boolean(node.detail);
           return (
             <div
               key={node.id}
-              className="flex flex-col items-center gap-3 md:flex-1 md:flex-row"
+              className="flex flex-col items-center gap-3 md:flex-1 md:flex-row md:items-stretch"
             >
               <motion.button
                 type="button"
@@ -57,7 +57,7 @@ export function AnimatedFlow({ nodes, loop = true }: AnimatedFlowProps) {
                 transition={{ delay: i * 0.12, duration: 0.4 }}
                 whileHover={clickable ? { y: -4 } : undefined}
                 className={cn(
-                  "flex w-full flex-col items-center gap-2 rounded-2xl border px-4 py-5 text-center transition-colors md:w-auto md:flex-1",
+                  "flex min-h-[150px] w-full flex-col items-center justify-center gap-2 rounded-2xl border px-3 py-5 text-center transition-colors md:w-auto md:flex-1",
                   node.accent === "brand"
                     ? "border-brand/40 bg-brand-soft"
                     : "border-border bg-surface",
@@ -68,7 +68,7 @@ export function AnimatedFlow({ nodes, loop = true }: AnimatedFlowProps) {
               >
                 <span
                   className={cn(
-                    "grid h-10 w-10 place-items-center rounded-xl",
+                    "grid h-10 w-10 shrink-0 place-items-center rounded-xl",
                     node.accent === "brand"
                       ? "bg-brand text-white"
                       : "bg-brand-soft text-brand"
@@ -76,16 +76,18 @@ export function AnimatedFlow({ nodes, loop = true }: AnimatedFlowProps) {
                 >
                   <Icon className="h-5 w-5" />
                 </span>
-                <span className="text-sm font-medium">{node.label}</span>
+                <span className="flex min-h-[2.5rem] items-center text-sm font-medium leading-tight">
+                  {node.label}
+                </span>
                 {clickable && (
-                  <span className="text-[11px] font-medium uppercase tracking-wide text-brand">
+                  <span className="whitespace-nowrap text-[10px] font-semibold uppercase tracking-wide text-brand">
                     Click to learn
                   </span>
                 )}
               </motion.button>
 
               {i < nodes.length - 1 && (
-                <div className="relative flex h-8 items-center justify-center md:h-auto md:w-12">
+                <div className="relative flex h-8 items-center justify-center md:h-auto md:w-10">
                   <motion.span
                     aria-hidden
                     initial={{ opacity: 0.25 }}
@@ -108,6 +110,10 @@ export function AnimatedFlow({ nodes, loop = true }: AnimatedFlowProps) {
                     <ArrowRight className="h-5 w-5" />
                   </motion.span>
                 </div>
+              )}
+
+              {i === nodes.length - 1 && (
+                <div aria-hidden className="hidden md:block md:w-10" />
               )}
             </div>
           );

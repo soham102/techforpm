@@ -43,4 +43,44 @@ export const concepts: Concept[] = [
     icon: "shield",
     available: true,
   },
+  {
+    slug: "microservices",
+    title: "Microservices vs Monolith",
+    description:
+      "Why companies split one big system into independent services — scaling, releases, reliability and team ownership.",
+    minutes: 16,
+    difficulty: "Intermediate",
+    icon: "layers",
+    available: true,
+  },
+  {
+    slug: "system-design",
+    title: "System Design Basics",
+    description:
+      "How modern apps are structured end-to-end — requests, scaling, load balancing and failure, seen from the product side.",
+    minutes: 18,
+    difficulty: "Intermediate",
+    icon: "workflow",
+    available: true,
+  },
+  {
+    slug: "search",
+    title: "Search Systems",
+    description:
+      "How apps find, rank and correct results — indexing, relevance, typos and why search quality drives conversion.",
+    minutes: 17,
+    difficulty: "Intermediate",
+    icon: "search",
+    available: true,
+  },
+  {
+    slug: "recommendations",
+    title: "Recommendation Systems",
+    description:
+      "Why every user sees a different feed — behavior signals, personalization, feedback loops and the cold-start problem.",
+    minutes: 18,
+    difficulty: "Intermediate",
+    icon: "sparkles",
+    available: true,
+  },
 ];
