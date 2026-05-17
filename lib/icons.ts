@@ -78,6 +78,12 @@ import {
   Snowflake,
   Repeat,
   MousePointerClick,
+  Coffee,
+  House,
+  ServerCrash,
+  Wifi,
+  MemoryStick,
+  HardDrive,
   type LucideIcon,
 } from "lucide-react";
 
@@ -166,6 +172,12 @@ export const icons = {
   snowflake: Snowflake,
   loop: Repeat,
   click: MousePointerClick,
+  coffee: Coffee,
+  home: House,
+  serverCrash: ServerCrash,
+  wifi: Wifi,
+  memory: MemoryStick,
+  drive: HardDrive,
 } satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof icons;

@@ -83,4 +83,14 @@ export const concepts: Concept[] = [
     icon: "sparkles",
     available: true,
   },
+  {
+    slug: "caching",
+    title: "Caching",
+    description:
+      "Why apps load faster the second time — cache hit vs miss, surviving traffic spikes, stale data, and why speed drives retention.",
+    minutes: 16,
+    difficulty: "Beginner",
+    icon: "zap",
+    available: true,
+  },
 ];
