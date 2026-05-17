@@ -82,8 +82,15 @@ import {
   House,
   ServerCrash,
   Wifi,
+  WifiOff,
   MemoryStick,
   HardDrive,
+  MessageSquare,
+  TrendingUp,
+  Signal,
+  PlugZap,
+  Satellite,
+  Radar,
   type LucideIcon,
 } from "lucide-react";
 
@@ -176,8 +183,15 @@ export const icons = {
   home: House,
   serverCrash: ServerCrash,
   wifi: Wifi,
+  wifiOff: WifiOff,
   memory: MemoryStick,
   drive: HardDrive,
+  message: MessageSquare,
+  trendingUp: TrendingUp,
+  signal: Signal,
+  plug: PlugZap,
+  satellite: Satellite,
+  radar: Radar,
 } satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof icons;

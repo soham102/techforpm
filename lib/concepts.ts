@@ -93,4 +93,24 @@ export const concepts: Concept[] = [
     icon: "zap",
     available: true,
   },
+  {
+    slug: "load-balancers",
+    title: "Load Balancers",
+    description:
+      "How apps survive millions of users — traffic distribution, balancing strategies, failover, auto-scaling, and why it protects uptime.",
+    minutes: 17,
+    difficulty: "Beginner",
+    icon: "scale",
+    available: true,
+  },
+  {
+    slug: "realtime",
+    title: "WebSockets & Real-Time Systems",
+    description:
+      "How apps update instantly without refreshing — polling vs WebSockets, live tracking & chat, multi-user broadcast, and reconnection handling.",
+    minutes: 18,
+    difficulty: "Beginner",
+    icon: "signal",
+    available: true,
+  },
 ];
