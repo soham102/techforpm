@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { createClient } from "@/lib/supabase/server";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
@@ -42,6 +43,7 @@ export default async function RootLayout({
             </div>
           </ThemeProvider>
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
