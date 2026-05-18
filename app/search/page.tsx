@@ -17,7 +17,7 @@ import { SearchAnalytics } from "@/components/search/search-analytics";
 import { SEARCH_INSIGHTS, SEARCH_QUIZ } from "@/lib/search";
 
 export const metadata: Metadata = {
-  title: "Search Systems — Tech Concepts for PMs",
+  title: "Search Systems — PMverse",
   description:
     "Understand app search visually: a directory analogy, a live search playground, indexing, ranking, typo correction, filters, failure modes, and a search analytics dashboard.",
 };

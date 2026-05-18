@@ -17,7 +17,7 @@ import {
 import { DB_INSIGHTS, DB_QUIZ } from "@/lib/databases";
 
 export const metadata: Metadata = {
-  title: "Databases for Product Managers — Tech Concepts for PMs",
+  title: "Databases for Product Managers — PMverse",
   description:
     "Understand databases visually: a warehouse analogy, how QuickBite stores data, an interactive database simulator, relationships, indexing, latency, and why it matters for product.",
 };

@@ -14,7 +14,7 @@ import { SecurityConcepts } from "@/components/auth/security-concepts";
 import { AUTH_INSIGHTS, AUTH_QUIZ } from "@/lib/auth";
 
 export const metadata: Metadata = {
-  title: "Authentication for Product Managers — Tech Concepts for PMs",
+  title: "Authentication for Product Managers — PMverse",
   description:
     "Understand authentication visually: an airport-security analogy, how QuickBite logs users in, an interactive login simulator, tokens & sessions, auth methods, and why it matters for product.",
 };

@@ -9,7 +9,7 @@ import { Quiz, type QuizOption } from "@/components/quiz";
 import { ModuleSidebar, type ModuleStep } from "@/components/module-sidebar";
 
 export const metadata: Metadata = {
-  title: "API Fundamentals — Tech Concepts for PMs",
+  title: "API Fundamentals — PMverse",
   description:
     "Understand APIs visually: a restaurant analogy, a real food-delivery flow, an interactive simulator, and why it matters for product decisions.",
 };

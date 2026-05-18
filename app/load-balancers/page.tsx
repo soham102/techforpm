@@ -18,7 +18,7 @@ import { LbAnalytics } from "@/components/lb/lb-analytics";
 import { LB_INSIGHTS, LB_QUIZ } from "@/lib/load-balancing";
 
 export const metadata: Metadata = {
-  title: "Load Balancers — Tech Concepts for PMs",
+  title: "Load Balancers — PMverse",
   description:
     "Understand load balancers visually: a traffic-police analogy, why apps crash at peak, an interactive traffic-distribution playground, balancing strategies, failure handling, auto-scaling, and a live traffic dashboard — built for non-technical PMs.",
 };

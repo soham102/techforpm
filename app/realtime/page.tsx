@@ -19,7 +19,7 @@ import { RtAnalytics } from "@/components/rt/rt-analytics";
 import { RT_INSIGHTS, RT_QUIZ } from "@/lib/realtime";
 
 export const metadata: Metadata = {
-  title: "WebSockets & Real-Time Systems — Tech Concepts for PMs",
+  title: "WebSockets & Real-Time Systems — PMverse",
   description:
     "Understand real-time systems visually: a live-phone-call analogy, polling vs WebSockets, an interactive real-time playground, live tracking and chat simulations, failure & reconnection handling, and a live analytics dashboard — built for non-technical PMs.",
 };

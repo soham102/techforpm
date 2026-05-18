@@ -17,7 +17,7 @@ import { RecAnalytics } from "@/components/rec/rec-analytics";
 import { REC_INSIGHTS, REC_QUIZ } from "@/lib/recommendations";
 
 export const metadata: Metadata = {
-  title: "Recommendation Systems — Tech Concepts for PMs",
+  title: "Recommendation Systems — PMverse",
   description:
     "Understand personalization visually: a smart-assistant analogy, behaviour signals, a live personalization playground, feedback loops, the cold-start problem, failure modes, and a recommendation analytics dashboard.",
 };

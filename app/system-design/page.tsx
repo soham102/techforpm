@@ -17,7 +17,7 @@ import { ArchitecturePlayground } from "@/components/sys/architecture-playground
 import { SD_INSIGHTS, SD_QUIZ } from "@/lib/system-design";
 
 export const metadata: Metadata = {
-  title: "System Design Basics — Tech Concepts for PMs",
+  title: "System Design Basics — PMverse",
   description:
     "Understand system design visually: a restaurant-chain analogy, a clickable architecture, a full request-journey simulator, scaling, load balancing, failure simulations, and a build-it-yourself playground.",
 };

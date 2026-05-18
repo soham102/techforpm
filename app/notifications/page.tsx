@@ -18,7 +18,7 @@ import { NotifAnalytics } from "@/components/notif/notif-analytics";
 import { NOTIF_INSIGHTS, NOTIF_QUIZ } from "@/lib/notifications";
 
 export const metadata: Metadata = {
-  title: "Push Notifications — Tech Concepts for PMs",
+  title: "Push Notifications — PMverse",
   description:
     "Understand push notifications visually: a courier-delivery analogy, the full notification architecture, an interactive notification playground, event triggers, the delivery pipeline, failure & retry handling, personalization, and a live analytics dashboard — built for non-technical PMs.",
 };

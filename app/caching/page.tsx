@@ -18,7 +18,7 @@ import { CacheAnalytics } from "@/components/cache/cache-analytics";
 import { CACHE_INSIGHTS, CACHE_QUIZ } from "@/lib/caching";
 
 export const metadata: Metadata = {
-  title: "Caching — Tech Concepts for PMs",
+  title: "Caching — PMverse",
   description:
     "Understand caching visually: a coffee-jar analogy, why apps slow down, cache hit vs miss, an interactive cache playground, traffic-spike survival, stale data, and a live performance dashboard — built for non-technical PMs.",
 };

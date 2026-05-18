@@ -18,7 +18,7 @@ import { QueueAnalytics } from "@/components/queue/queue-analytics";
 import { QUEUE_INSIGHTS, QUEUE_QUIZ } from "@/lib/queues";
 
 export const metadata: Metadata = {
-  title: "Queues & Background Jobs — Tech Concepts for PMs",
+  title: "Queues & Background Jobs — PMverse",
   description:
     "Why apps process some tasks later, explained visually: a restaurant order-counter analogy, synchronous vs asynchronous, a live task-queue playground, traffic spikes, retries, priority queues and a queue analytics dashboard.",
 };

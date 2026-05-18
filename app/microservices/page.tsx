@@ -19,7 +19,7 @@ import { Tradeoffs } from "@/components/micro/tradeoffs";
 import { MS_INSIGHTS, MS_QUIZ } from "@/lib/microservices";
 
 export const metadata: Metadata = {
-  title: "Microservices vs Monolith — Tech Concepts for PMs",
+  title: "Microservices vs Monolith — PMverse",
   description:
     "Understand monolith vs microservices visually: a restaurant analogy, interactive simulators, scaling and failure demos, team ownership, balanced trade-offs, and why it matters for product.",
 };
