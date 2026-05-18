@@ -91,6 +91,15 @@ import {
   PlugZap,
   Satellite,
   Radar,
+  Send,
+  BellRing,
+  BellOff,
+  Inbox,
+  Target,
+  UserCheck,
+  Siren,
+  PartyPopper,
+  ShoppingBag,
   type LucideIcon,
 } from "lucide-react";
 
@@ -192,6 +201,15 @@ export const icons = {
   plug: PlugZap,
   satellite: Satellite,
   radar: Radar,
+  send: Send,
+  bellRing: BellRing,
+  bellOff: BellOff,
+  inbox: Inbox,
+  target: Target,
+  userCheck: UserCheck,
+  siren: Siren,
+  party: PartyPopper,
+  bag: ShoppingBag,
 } satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof icons;

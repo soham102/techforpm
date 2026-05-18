@@ -113,4 +113,14 @@ export const concepts: Concept[] = [
     icon: "signal",
     available: true,
   },
+  {
+    slug: "notifications",
+    title: "Push Notifications",
+    description:
+      "How apps notify you instantly — event triggers, the notification pipeline, why delivery fails & retries, personalization, fatigue, and the engagement metrics PMs watch.",
+    minutes: 17,
+    difficulty: "Beginner",
+    icon: "bellRing",
+    available: true,
+  },
 ];
