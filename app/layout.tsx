@@ -1,4 +1,5 @@
 /// <reference types="next" />
+import { Analytics } from "@vercel/analytics/react"
 import { Providers } from "./providers";
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
@@ -42,6 +43,7 @@ export default async function RootLayout({
             </div>
           </ThemeProvider>
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
