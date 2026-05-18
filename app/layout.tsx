@@ -1,5 +1,5 @@
 /// <reference types="next" />
-import { Analytics } from "@vercel/analytics/react"
+import { Analytics } from "@vercel/analytics/next"
 import { Providers } from "./providers";
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
