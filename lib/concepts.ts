@@ -123,4 +123,14 @@ export const concepts: Concept[] = [
     icon: "bellRing",
     available: true,
   },
+  {
+    slug: "queues",
+    title: "Queues & Background Jobs",
+    description:
+      "Why apps process some tasks later — the order-counter analogy, sync vs async, a live task-queue playground, traffic spikes, retries, priority queues and queue health.",
+    minutes: 18,
+    difficulty: "Beginner",
+    icon: "receipt",
+    available: true,
+  },
 ];
