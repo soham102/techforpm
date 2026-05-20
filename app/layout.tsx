@@ -1,4 +1,5 @@
 /// <reference types="next" />
+import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react"
 import { Providers } from "./providers";
 import type { Metadata } from "next";
@@ -33,6 +34,20 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
+      <Script
+        src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+        strategy="afterInteractive"
+      />
+
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
+        `}
+      </Script>
       <body className={`${inter.variable} ${mono.variable} font-sans`}>
         <Providers initialUser={user}>
           <ThemeProvider>
