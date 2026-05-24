@@ -76,11 +76,13 @@ function useSpotlightRect(targetId: string, step: number) {
 function SpotlightOverlay({ rect }: { rect: DOMRect | null }) {
   const PAD = 14;
   const vh = typeof window !== "undefined" ? window.innerHeight : 900;
+  const vw = typeof window !== "undefined" ? window.innerWidth : 1280;
 
-  const cx = rect ? rect.left - PAD : 0;
+  // Full viewport width so the spotlight covers the entire page horizontally
+  const cx = 0;
   const cy = rect ? Math.max(rect.top - PAD, 0) : 0;
-  const cw = rect ? rect.width + PAD * 2 : 0;
-  const ch = rect ? Math.min(rect.height + PAD * 2, vh * 0.68) : 0;
+  const cw = vw;
+  const ch = rect ? Math.min(rect.height + PAD * 2, vh * 0.72) : 0;
   const visible = !!rect;
 
   return (
@@ -162,7 +164,7 @@ function WelcomeBanner({
 }) {
   return (
     <motion.div
-      className="fixed bottom-5 right-5 z-[100] w-[360px] max-w-[calc(100vw-2.5rem)]"
+      className="fixed top-20 right-5 z-[100] w-[360px] max-w-[calc(100vw-2.5rem)]"
       initial={{ y: 24, opacity: 0, scale: 0.95 }}
       animate={{ y: 0, opacity: 1, scale: 1 }}
       exit={{ y: 24, opacity: 0, scale: 0.95 }}
@@ -239,7 +241,7 @@ function TourTooltip({
 
   return (
     <motion.div
-      className="fixed bottom-5 right-5 z-[100] w-[360px] max-w-[calc(100vw-2.5rem)]"
+      className="fixed top-20 right-5 z-[100] w-[360px] max-w-[calc(100vw-2.5rem)]"
       initial={{ y: 16, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: 16, opacity: 0 }}
@@ -470,7 +472,7 @@ export function HomeTourBanner() {
     <AnimatePresence>
       {show && (
         <motion.div
-          className="fixed bottom-5 right-5 z-[100] w-[360px] max-w-[calc(100vw-2.5rem)]"
+          className="fixed top-20 right-5 z-[100] w-[360px] max-w-[calc(100vw-2.5rem)]"
           initial={{ y: 24, opacity: 0, scale: 0.95 }}
           animate={{ y: 0, opacity: 1, scale: 1 }}
           exit={{ y: 24, opacity: 0, scale: 0.95 }}
