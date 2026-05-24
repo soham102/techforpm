@@ -2,7 +2,7 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 /** Public routes that never require an authenticated session. */
-const PUBLIC_PATHS = ["/login", "/auth"];
+const PUBLIC_PATHS = ["/login", "/auth", "/booking-conflict"];
 
 function isPublicPath(pathname: string) {
   return PUBLIC_PATHS.some(

@@ -7,6 +7,7 @@ import { QuickBitePlayground } from "@/components/quickbite-playground";
 import { InfoCard, type InfoCardData } from "@/components/ui/info-card";
 import { Quiz, type QuizOption } from "@/components/quiz";
 import { ModuleSidebar, type ModuleStep } from "@/components/module-sidebar";
+import { ApiOnboarding } from "@/components/api/api-onboarding";
 
 export const metadata: Metadata = {
   title: "API Fundamentals — PMverse",
@@ -126,6 +127,7 @@ const quizOptions: QuizOption[] = [
 export default function ApiModulePage() {
   return (
     <div className="mx-auto max-w-6xl px-5 pb-28">
+      <ApiOnboarding />
       <div className="flex gap-12 pt-10">
         <ModuleSidebar steps={steps} />
 

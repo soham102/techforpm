@@ -133,4 +133,14 @@ export const concepts: Concept[] = [
     icon: "receipt",
     available: true,
   },
+  {
+    slug: "booking-conflict",
+    title: "AI-Assisted Booking Conflict Resolution",
+    description:
+      "Three customers race for the same slot. Watch slot locks, payment delays, graceful rejection, and AI-assisted alternates — with a hard line between deterministic decisions and AI experience.",
+    minutes: 20,
+    difficulty: "Advanced",
+    icon: "lock",
+    available: true,
+  },
 ];
