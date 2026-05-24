@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ChevronRight, Rocket, Play } from "lucide-react";
 
 /* ─── Constants ─────────────────────────────────────────────────────────────── */
 const STORAGE_KEY = "pmverse-api-onboarding-v2";
+const AUTOSTART_KEY = "pmverse-api-tour-autostart";
 
 /* ─── Steps (each targetId maps to a section id on the page) ───────────────── */
 const STEPS = [
@@ -160,7 +162,7 @@ function WelcomeBanner({
 }) {
   return (
     <motion.div
-      className="fixed bottom-5 left-1/2 z-[100] w-[calc(100%-2rem)] max-w-[360px] -translate-x-1/2"
+      className="fixed bottom-5 right-5 z-[100] w-[360px] max-w-[calc(100vw-2.5rem)]"
       initial={{ y: 24, opacity: 0, scale: 0.95 }}
       animate={{ y: 0, opacity: 1, scale: 1 }}
       exit={{ y: 24, opacity: 0, scale: 0.95 }}
@@ -237,7 +239,7 @@ function TourTooltip({
 
   return (
     <motion.div
-      className="fixed bottom-5 left-1/2 z-[100] w-[calc(100%-2rem)] max-w-[360px] -translate-x-1/2"
+      className="fixed bottom-5 right-5 z-[100] w-[360px] max-w-[calc(100vw-2.5rem)]"
       initial={{ y: 16, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: 16, opacity: 0 }}
@@ -383,7 +385,13 @@ export function ApiOnboarding() {
   const [step, setStep] = useState(1);
 
   useEffect(() => {
-    if (!localStorage.getItem(STORAGE_KEY)) setPhase("welcome");
+    if (localStorage.getItem(AUTOSTART_KEY)) {
+      localStorage.removeItem(AUTOSTART_KEY);
+      localStorage.setItem(STORAGE_KEY, "1");
+      setPhase("touring");
+    } else if (!localStorage.getItem(STORAGE_KEY)) {
+      setPhase("welcome");
+    }
   }, []);
 
   const close = useCallback(() => {
@@ -434,6 +442,89 @@ export function ApiOnboarding() {
           onBack={back}
           onClose={close}
         />
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ─── Home page tour banner ─────────────────────────────────────────────────── */
+export function HomeTourBanner() {
+  const router = useRouter();
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    if (!localStorage.getItem(STORAGE_KEY)) setShow(true);
+  }, []);
+
+  function startTour() {
+    localStorage.setItem(AUTOSTART_KEY, "1");
+    router.push("/api-module");
+  }
+
+  function dismiss() {
+    localStorage.setItem(STORAGE_KEY, "1");
+    setShow(false);
+  }
+
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          className="fixed bottom-5 right-5 z-[100] w-[360px] max-w-[calc(100vw-2.5rem)]"
+          initial={{ y: 24, opacity: 0, scale: 0.95 }}
+          animate={{ y: 0, opacity: 1, scale: 1 }}
+          exit={{ y: 24, opacity: 0, scale: 0.95 }}
+          transition={{ type: "spring", stiffness: 280, damping: 24, delay: 1.2 }}
+        >
+          <GradBorder>
+            <div className="p-5">
+              <div className="flex items-start gap-3.5">
+                <motion.div
+                  className="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-white"
+                  style={{
+                    background: "linear-gradient(135deg, #6366f1 0%, #818cf8 100%)",
+                    boxShadow:
+                      "0 0 0 1px rgba(99,102,241,0.4), 0 4px 20px rgba(99,102,241,0.3)",
+                  }}
+                  animate={{ y: [0, -3, 0] }}
+                  transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <Rocket className="h-5 w-5" />
+                </motion.div>
+                <div>
+                  <p className="font-semibold leading-snug text-white">
+                    New to APIs? 🚀
+                  </p>
+                  <p className="mt-1 text-[13px] leading-relaxed text-white/50">
+                    Take a 2-min guided tour through the API module — no code required.
+                  </p>
+                </div>
+              </div>
+              <div className="mt-4 flex gap-2.5">
+                <motion.button
+                  onClick={startTour}
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-semibold text-white"
+                  style={{
+                    background: "linear-gradient(135deg, #6366f1, #818cf8)",
+                    boxShadow:
+                      "0 0 0 1px rgba(99,102,241,0.3), 0 4px 20px rgba(99,102,241,0.25)",
+                  }}
+                  whileHover={{ scale: 1.02, y: -1 }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  <Play className="h-4 w-4 fill-white" />
+                  Start Tour
+                </motion.button>
+                <button
+                  onClick={dismiss}
+                  className="rounded-xl border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-medium text-white/45 transition-colors hover:border-white/20 hover:text-white/70"
+                >
+                  Skip
+                </button>
+              </div>
+            </div>
+          </GradBorder>
+        </motion.div>
       )}
     </AnimatePresence>
   );

@@ -1,6 +1,7 @@
 import { Hero } from "@/components/hero";
 import { ConceptCard } from "@/components/concept-card";
 import { concepts, type Difficulty } from "@/lib/concepts";
+import { HomeTourBanner } from "@/components/api/api-onboarding";
 
 const DIFFICULTY_ORDER: Record<Difficulty, number> = {
   Beginner: 0,
@@ -16,6 +17,7 @@ const sortedConcepts = [...concepts].sort(
 export default function HomePage() {
   return (
     <div className="mx-auto max-w-6xl px-5">
+      <HomeTourBanner />
       <Hero />
 
       <section className="pb-28">
