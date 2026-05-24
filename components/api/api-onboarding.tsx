@@ -45,84 +45,48 @@ const STEPS = [
 
 const TOTAL = STEPS.length;
 
-/* ─── Spotlight rect hook ───────────────────────────────────────────────────── */
-function useSpotlightRect(targetId: string, step: number) {
-  const [rect, setRect] = useState<DOMRect | null>(null);
-
+/* ─── Scroll to section hook ────────────────────────────────────────────────── */
+function useScrollToSection(targetId: string, step: number) {
   useEffect(() => {
-    setRect(null);
     const el = document.getElementById(targetId);
-    if (!el) return;
-
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
-
-    const measure = () => setRect(el.getBoundingClientRect());
-    const t = setTimeout(measure, 520);
-
-    window.addEventListener("scroll", measure, { passive: true });
-    window.addEventListener("resize", measure, { passive: true });
-
-    return () => {
-      clearTimeout(t);
-      window.removeEventListener("scroll", measure);
-      window.removeEventListener("resize", measure);
-    };
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [targetId, step]);
-
-  return rect;
 }
 
-/* ─── SVG spotlight overlay ─────────────────────────────────────────────────── */
-function SpotlightOverlay({ rect }: { rect: DOMRect | null }) {
-  const PAD = 14;
-  const vh = typeof window !== "undefined" ? window.innerHeight : 900;
-  const vw = typeof window !== "undefined" ? window.innerWidth : 1280;
-
-  // Full viewport width so the spotlight covers the entire page horizontally
-  const cx = 0;
-  const cy = rect ? Math.max(rect.top - PAD, 0) : 0;
-  const cw = vw;
-  const ch = rect ? Math.min(rect.height + PAD * 2, vh * 0.72) : 0;
-  const visible = !!rect;
-
+/* ─── Full-viewport glow overlay ────────────────────────────────────────────── */
+function SpotlightOverlay() {
   return (
-    <svg
-      className="pointer-events-none fixed inset-0 z-[90] h-full w-full"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <defs>
-        <mask id="pmv-spot">
-          <rect x="0" y="0" width="100%" height="100%" fill="white" />
-          <motion.rect
-            animate={visible ? { x: cx, y: cy, width: cw, height: ch, opacity: 1 } : { opacity: 0, width: 0, height: 0 }}
-            transition={{ duration: 0.38, ease: [0.4, 0, 0.2, 1] }}
-            rx={12}
-            fill="black"
-          />
-        </mask>
-      </defs>
-
-      {/* dim layer with hole */}
-      <motion.rect
-        x="0" y="0" width="100%" height="100%"
-        fill="rgba(7,7,16,0.76)"
-        mask="url(#pmv-spot)"
+    <>
+      {/* Subtle dark veil so the tour card pops */}
+      <motion.div
+        className="pointer-events-none fixed inset-0 z-[90]"
+        style={{ background: "rgba(7,7,16,0.30)" }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.25 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
       />
-
-      {/* glow ring */}
-      <motion.rect
-        animate={visible ? { x: cx, y: cy, width: cw, height: ch, opacity: 1 } : { opacity: 0, width: 0, height: 0 }}
-        transition={{ duration: 0.38, ease: [0.4, 0, 0.2, 1] }}
-        rx={12}
-        fill="none"
-        stroke="rgba(99,102,241,0.55)"
-        strokeWidth={1.5}
-        style={{ filter: "drop-shadow(0 0 8px rgba(99,102,241,0.4))" }}
-      />
-    </svg>
+      {/* Blue glow ring framing the entire viewport */}
+      <svg
+        className="pointer-events-none fixed inset-0 z-[91] h-full w-full"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <motion.rect
+          x={2} y={2}
+          width="calc(100% - 4px)"
+          height="calc(100% - 4px)"
+          rx={0}
+          fill="none"
+          stroke="rgba(99,102,241,0.7)"
+          strokeWidth={2}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.4 }}
+          style={{ filter: "drop-shadow(0 0 18px rgba(99,102,241,0.55))" }}
+        />
+      </svg>
+    </>
   );
 }
 
@@ -364,11 +328,11 @@ function ActiveTour({
   onBack: () => void;
   onClose: () => void;
 }) {
-  const rect = useSpotlightRect(STEPS[stepIndex - 1].targetId, stepIndex);
+  useScrollToSection(STEPS[stepIndex - 1].targetId, stepIndex);
 
   return (
     <>
-      <SpotlightOverlay rect={rect} />
+      <SpotlightOverlay />
       <TourTooltip
         stepIndex={stepIndex}
         onNext={onNext}
