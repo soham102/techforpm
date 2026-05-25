@@ -530,7 +530,7 @@ export function PMAnalyticsLab() {
   };
 
   const scrollToScenarios = () => {
-    document.getElementById("scenarios")?.scrollIntoView({ behavior: "smooth" });
+    document.getElementById("foundations")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -565,8 +565,8 @@ export function PMAnalyticsLab() {
           >
             <LabHero onStart={scrollToScenarios} />
             <HowItWorks />
-            <ScenarioPicker onSelect={handleSelectScenario} />
             <FoundationPicker onSelect={handleSelectScenario} />
+            <ScenarioPicker onSelect={handleSelectScenario} />
             <BadgeShowcase />
           </motion.div>
         )}
