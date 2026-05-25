@@ -134,6 +134,16 @@ export const concepts: Concept[] = [
     available: true,
   },
   {
+    slug: "sql-for-pms",
+    title: "SQL for Product Managers",
+    description:
+      "Practice SQL through real PM scenarios — food delivery, streaming, ride-sharing, SaaS. Solve business problems and interpret product data like a data-driven PM.",
+    minutes: 20,
+    difficulty: "Intermediate",
+    icon: "chart",
+    available: true,
+  },
+  {
     slug: "booking-conflict",
     title: "AI-Assisted Booking Conflict Resolution",
     description:
