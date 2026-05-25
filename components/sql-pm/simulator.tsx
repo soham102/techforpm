@@ -34,58 +34,112 @@ function stripComments(sql: string): string {
   return sql.replace(/--[^\n]*/g, "").trim();
 }
 
+// Returns the set of structural SQL clauses used in a query.
+// Used to compare what the ideal solution requires vs what the user wrote.
+function getStructuralElements(sql: string): Set<string> {
+  const u = stripComments(sql).toUpperCase().replace(/\s+/g, " ");
+  const s = new Set<string>();
+  if (/\bWHERE\b/.test(u)) s.add("WHERE");
+  if (/\bGROUP\s+BY\b/.test(u)) s.add("GROUP BY");
+  if (/\bHAVING\b/.test(u)) s.add("HAVING");
+  if (/\bORDER\s+BY\b/.test(u)) s.add("ORDER BY");
+  if (/\bLIMIT\b/.test(u)) s.add("LIMIT");
+  if (/\bLEFT\s+(OUTER\s+)?JOIN\b/.test(u)) s.add("LEFT JOIN");
+  else if (/\bJOIN\b/.test(u)) s.add("JOIN");
+  if (/\bDISTINCT\b/.test(u)) s.add("DISTINCT");
+  if (/\bCOUNT\s*\(/.test(u)) s.add("COUNT");
+  if (/\bSUM\s*\(/.test(u)) s.add("SUM");
+  if (/\bAVG\s*\(/.test(u)) s.add("AVG");
+  if (/\b(MAX|MIN)\s*\(/.test(u)) s.add("MAX_MIN");
+  if (/\bLIKE\b/.test(u)) s.add("LIKE");
+  if (/\bBETWEEN\b/.test(u)) s.add("BETWEEN");
+  if (/\bIS\s+(NOT\s+)?NULL\b/.test(u)) s.add("IS_NULL");
+  if (/\bCASE\s+WHEN\b/.test(u)) s.add("CASE_WHEN");
+  if (/\bIN\s*\(/.test(u)) s.add("IN");
+  return s;
+}
+
+const ELEMENT_HINT: Record<string, string> = {
+  "WHERE":     "Add a WHERE clause to filter rows as the question requires.",
+  "GROUP BY":  "Group your results with GROUP BY.",
+  "HAVING":    "Filter grouped results with HAVING.",
+  "ORDER BY":  "Sort your results with ORDER BY.",
+  "LIMIT":     "Cap the result count with LIMIT.",
+  "JOIN":      "You need to JOIN another table for this query.",
+  "LEFT JOIN": "Use LEFT JOIN to include all rows from the left table.",
+  "DISTINCT":  "Use DISTINCT to remove duplicate values.",
+  "COUNT":     "Count rows using COUNT().",
+  "SUM":       "Total the values using SUM().",
+  "AVG":       "Calculate the average using AVG().",
+  "MAX_MIN":   "Find the extreme value using MAX() or MIN().",
+  "LIKE":      "Match text patterns using LIKE with % wildcards.",
+  "BETWEEN":   "Filter a range using BETWEEN x AND y.",
+  "IS_NULL":   "Check for missing values using IS NULL or IS NOT NULL.",
+  "CASE_WHEN": "Use CASE WHEN ... THEN ... END for conditional output.",
+  "IN":        "Match multiple values using IN (...).",
+};
+
 function validateSQL(query: string, scenario: Scenario): ValidationResult {
   const stripped = stripComments(query);
   const upper = stripped.toUpperCase().replace(/\s+/g, " ").trim();
 
+  // 1. Basic syntax
   if (!stripped) {
-    return { ok: false, error: "Query is empty. Write a SQL SELECT statement to continue." };
+    return { ok: false, error: "Query is empty — write a SQL SELECT statement to continue." };
   }
-
   if (!/^SELECT\b/.test(upper)) {
-    return { ok: false, error: 'SQL queries must start with SELECT — got "' + stripped.split(/\s/)[0] + '" instead.' };
+    return { ok: false, error: `SQL must start with SELECT — found "${stripped.split(/\s/)[0]}" instead.` };
   }
-
   if (!upper.includes(" FROM ") && !/\bFROM$/.test(upper)) {
     return { ok: false, error: "Missing FROM clause — specify which table to query." };
   }
-
   const opens = (stripped.match(/\(/g) ?? []).length;
   const closes = (stripped.match(/\)/g) ?? []).length;
   if (opens !== closes) {
-    return {
-      ok: false,
-      error: `Unmatched parentheses — ${opens} opening '(' vs ${closes} closing ')'.`,
-    };
+    return { ok: false, error: `Unmatched parentheses — ${opens} opening '(' vs ${closes} closing ')'.` };
   }
 
+  // 2. Concept fast-fail for foundation scenarios
   if (scenario.sqlConcept) {
-    const checks: Record<string, { re: RegExp; hint: string }> = {
-      "SELECT *":       { re: /SELECT\s+\*/,                    hint: "Use SELECT * to retrieve all columns." },
-      "SELECT columns": { re: /SELECT\s+\w/,                    hint: "Name specific columns after SELECT." },
-      "WHERE":          { re: /\bWHERE\b/,                      hint: "Add a WHERE clause to filter rows." },
-      "AND/OR":         { re: /\b(AND|OR)\b/,                   hint: "Combine conditions with AND or OR." },
-      "ORDER BY":       { re: /\bORDER\s+BY\b/,                 hint: "Sort results with ORDER BY." },
-      "LIMIT":          { re: /\bLIMIT\b/,                      hint: "Cap the result count with LIMIT." },
-      "COUNT":          { re: /\bCOUNT\s*\(/,                   hint: "Count rows with COUNT()." },
-      "SUM":            { re: /\bSUM\s*\(/,                     hint: "Total a column with SUM()." },
-      "AVG":            { re: /\bAVG\s*\(/,                     hint: "Calculate the average with AVG()." },
-      "MAX/MIN":        { re: /\b(MAX|MIN)\s*\(/,               hint: "Find extremes with MAX() or MIN()." },
-      "DISTINCT":       { re: /\bDISTINCT\b/,                   hint: "Use SELECT DISTINCT to remove duplicates." },
-      "GROUP BY":       { re: /\bGROUP\s+BY\b/,                 hint: "Aggregate rows with GROUP BY." },
-      "HAVING":         { re: /\bHAVING\b/,                     hint: "Filter grouped results with HAVING." },
-      "LIKE":           { re: /\bLIKE\b/,                       hint: "Match text patterns with LIKE and % wildcards." },
-      "IN":             { re: /\bIN\s*\(/,                      hint: "Match a list of values with IN (...)." },
-      "BETWEEN":        { re: /\bBETWEEN\b/,                    hint: "Filter a range with BETWEEN x AND y." },
-      "IS NULL":        { re: /\bIS\s+(NOT\s+)?NULL\b/,         hint: "Check missing data with IS NULL / IS NOT NULL." },
-      "CASE WHEN":      { re: /\bCASE\s+WHEN\b/,               hint: "Use CASE WHEN ... THEN ... END for conditional output." },
-      "INNER JOIN":     { re: /\bJOIN\b/,                       hint: "Combine tables with JOIN tableName ON condition." },
-      "LEFT JOIN":      { re: /\bLEFT\s+(OUTER\s+)?JOIN\b/,    hint: "Include all left-table rows with LEFT JOIN." },
+    const conceptRe: Record<string, { re: RegExp; hint: string }> = {
+      "SELECT *":       { re: /SELECT\s+\*/,                  hint: "Use SELECT * to retrieve all columns." },
+      "SELECT columns": { re: /SELECT\s+\w/,                  hint: "Name specific columns after SELECT." },
+      "WHERE":          { re: /\bWHERE\b/,                    hint: "Filter rows with a WHERE clause." },
+      "AND/OR":         { re: /\b(AND|OR)\b/,                 hint: "Combine conditions with AND or OR." },
+      "ORDER BY":       { re: /\bORDER\s+BY\b/,               hint: "Sort results with ORDER BY." },
+      "LIMIT":          { re: /\bLIMIT\b/,                    hint: "Cap results with LIMIT." },
+      "COUNT":          { re: /\bCOUNT\s*\(/,                hint: "Count rows with COUNT()." },
+      "SUM":            { re: /\bSUM\s*\(/,                   hint: "Total a column with SUM()." },
+      "AVG":            { re: /\bAVG\s*\(/,                   hint: "Calculate the average with AVG()." },
+      "MAX/MIN":        { re: /\b(MAX|MIN)\s*\(/,             hint: "Find extremes with MAX() or MIN()." },
+      "DISTINCT":       { re: /\bDISTINCT\b/,                hint: "Use SELECT DISTINCT to remove duplicates." },
+      "GROUP BY":       { re: /\bGROUP\s+BY\b/,              hint: "Aggregate rows with GROUP BY." },
+      "HAVING":         { re: /\bHAVING\b/,                   hint: "Filter grouped results with HAVING." },
+      "LIKE":           { re: /\bLIKE\b/,                    hint: "Match text with LIKE and % wildcards." },
+      "IN":             { re: /\bIN\s*\(/,                    hint: "Match a list of values with IN (...)." },
+      "BETWEEN":        { re: /\bBETWEEN\b/,                hint: "Filter a range with BETWEEN x AND y." },
+      "IS NULL":        { re: /\bIS\s+(NOT\s+)?NULL\b/,      hint: "Check missing data with IS NULL." },
+      "CASE WHEN":      { re: /\bCASE\s+WHEN\b/,            hint: "Use CASE WHEN ... THEN ... END." },
+      "INNER JOIN":     { re: /\bJOIN\b/,                    hint: "Combine tables with JOIN tableName ON condition." },
+      "LEFT JOIN":      { re: /\bLEFT\s+(OUTER\s+)?JOIN\b/, hint: "Include all left-table rows with LEFT JOIN." },
     };
+    const cr = conceptRe[scenario.sqlConcept];
+    if (cr && !cr.re.test(upper)) {
+      return { ok: false, error: `Incorrect query — ${cr.hint}` };
+    }
+  }
 
-    const check = checks[scenario.sqlConcept];
-    if (check && !check.re.test(upper)) {
-      return { ok: false, error: `Incorrect query — ${check.hint}` };
+  // 3. Solution-based structural check
+  // Every SQL clause present in the ideal solution must appear in the user's query.
+  // This catches e.g. writing SELECT * without the required WHERE clause.
+  const required = getStructuralElements(scenario.challenge.solution);
+  const provided = getStructuralElements(query);
+  for (const el of Array.from(required)) {
+    if (!provided.has(el)) {
+      return {
+        ok: false,
+        error: `Incomplete query — ${ELEMENT_HINT[el] ?? `Missing ${el}.`}`,
+      };
     }
   }
 
