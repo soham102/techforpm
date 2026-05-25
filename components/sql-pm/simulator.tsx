@@ -27,6 +27,71 @@ import {
 import type { Scenario, ChartPoint } from "./data";
 import { cn } from "@/lib/utils";
 
+// ─── SQL Validator ────────────────────────────────────────────────────────────
+type ValidationResult = { ok: true } | { ok: false; error: string };
+
+function stripComments(sql: string): string {
+  return sql.replace(/--[^\n]*/g, "").trim();
+}
+
+function validateSQL(query: string, scenario: Scenario): ValidationResult {
+  const stripped = stripComments(query);
+  const upper = stripped.toUpperCase().replace(/\s+/g, " ").trim();
+
+  if (!stripped) {
+    return { ok: false, error: "Query is empty. Write a SQL SELECT statement to continue." };
+  }
+
+  if (!/^SELECT\b/.test(upper)) {
+    return { ok: false, error: 'SQL queries must start with SELECT — got "' + stripped.split(/\s/)[0] + '" instead.' };
+  }
+
+  if (!upper.includes(" FROM ") && !/\bFROM$/.test(upper)) {
+    return { ok: false, error: "Missing FROM clause — specify which table to query." };
+  }
+
+  const opens = (stripped.match(/\(/g) ?? []).length;
+  const closes = (stripped.match(/\)/g) ?? []).length;
+  if (opens !== closes) {
+    return {
+      ok: false,
+      error: `Unmatched parentheses — ${opens} opening '(' vs ${closes} closing ')'.`,
+    };
+  }
+
+  if (scenario.sqlConcept) {
+    const checks: Record<string, { re: RegExp; hint: string }> = {
+      "SELECT *":       { re: /SELECT\s+\*/,                    hint: "Use SELECT * to retrieve all columns." },
+      "SELECT columns": { re: /SELECT\s+\w/,                    hint: "Name specific columns after SELECT." },
+      "WHERE":          { re: /\bWHERE\b/,                      hint: "Add a WHERE clause to filter rows." },
+      "AND/OR":         { re: /\b(AND|OR)\b/,                   hint: "Combine conditions with AND or OR." },
+      "ORDER BY":       { re: /\bORDER\s+BY\b/,                 hint: "Sort results with ORDER BY." },
+      "LIMIT":          { re: /\bLIMIT\b/,                      hint: "Cap the result count with LIMIT." },
+      "COUNT":          { re: /\bCOUNT\s*\(/,                   hint: "Count rows with COUNT()." },
+      "SUM":            { re: /\bSUM\s*\(/,                     hint: "Total a column with SUM()." },
+      "AVG":            { re: /\bAVG\s*\(/,                     hint: "Calculate the average with AVG()." },
+      "MAX/MIN":        { re: /\b(MAX|MIN)\s*\(/,               hint: "Find extremes with MAX() or MIN()." },
+      "DISTINCT":       { re: /\bDISTINCT\b/,                   hint: "Use SELECT DISTINCT to remove duplicates." },
+      "GROUP BY":       { re: /\bGROUP\s+BY\b/,                 hint: "Aggregate rows with GROUP BY." },
+      "HAVING":         { re: /\bHAVING\b/,                     hint: "Filter grouped results with HAVING." },
+      "LIKE":           { re: /\bLIKE\b/,                       hint: "Match text patterns with LIKE and % wildcards." },
+      "IN":             { re: /\bIN\s*\(/,                      hint: "Match a list of values with IN (...)." },
+      "BETWEEN":        { re: /\bBETWEEN\b/,                    hint: "Filter a range with BETWEEN x AND y." },
+      "IS NULL":        { re: /\bIS\s+(NOT\s+)?NULL\b/,         hint: "Check missing data with IS NULL / IS NOT NULL." },
+      "CASE WHEN":      { re: /\bCASE\s+WHEN\b/,               hint: "Use CASE WHEN ... THEN ... END for conditional output." },
+      "INNER JOIN":     { re: /\bJOIN\b/,                       hint: "Combine tables with JOIN tableName ON condition." },
+      "LEFT JOIN":      { re: /\bLEFT\s+(OUTER\s+)?JOIN\b/,    hint: "Include all left-table rows with LEFT JOIN." },
+    };
+
+    const check = checks[scenario.sqlConcept];
+    if (check && !check.re.test(upper)) {
+      return { ok: false, error: `Incorrect query — ${check.hint}` };
+    }
+  }
+
+  return { ok: true };
+}
+
 // ─── SVG Line Chart ───────────────────────────────────────────────────────────
 function LineChart({ data }: { data: ChartPoint[] }) {
   const W = 320;
@@ -795,6 +860,7 @@ export function ActiveSimulator({ scenario }: { scenario: Scenario }) {
   const [running, setRunning] = useState(false);
   const [queryRan, setQueryRan] = useState(false);
   const [showSolution, setShowSolution] = useState(false);
+  const [queryError, setQueryError] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState(false);
   const [xp, setXP] = useState(() => {
     if (typeof window === "undefined") return 0;
@@ -806,7 +872,18 @@ export function ActiveSimulator({ scenario }: { scenario: Scenario }) {
     localStorage.setItem("pmlab_xp", String(xp));
   }, [xp]);
 
+  const handleQueryChange = (v: string) => {
+    setQuery(v);
+    if (queryError) setQueryError(null);
+  };
+
   const handleRunQuery = () => {
+    const result = validateSQL(query, scenario);
+    if (!result.ok) {
+      setQueryError(result.error);
+      return;
+    }
+    setQueryError(null);
     setRunning(true);
     setTimeout(() => {
       setRunning(false);
@@ -831,6 +908,7 @@ export function ActiveSimulator({ scenario }: { scenario: Scenario }) {
     setPhase("solving");
     setQueryRan(false);
     setShowSolution(false);
+    setQueryError(null);
   };
 
   return (
@@ -928,7 +1006,7 @@ export function ActiveSimulator({ scenario }: { scenario: Scenario }) {
 
           <SQLEditor
             value={query}
-            onChange={setQuery}
+            onChange={handleQueryChange}
             placeholder={
               scenario.sqlConcept
                 ? `-- ${scenario.sqlConcept} practice\n-- Write your query here and click Run Query`
@@ -983,8 +1061,27 @@ export function ActiveSimulator({ scenario }: { scenario: Scenario }) {
             )}
           </div>
 
+          {/* Query error */}
+          <AnimatePresence>
+            {queryError && (
+              <motion.div
+                key="query-error"
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                className="flex items-start gap-3 rounded-xl border border-rose-500/30 bg-rose-500/8 px-4 py-3"
+              >
+                <XCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-rose-400" />
+                <div>
+                  <p className="text-xs font-semibold text-rose-400">SQL Error</p>
+                  <p className="mt-0.5 text-xs leading-relaxed text-rose-200/80">{queryError}</p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           {/* XP hint for running */}
-          {!queryRan && (
+          {!queryRan && !queryError && (
             <p className="text-center text-xs text-muted/60">
               Run your query to see the results · +50 XP
             </p>
