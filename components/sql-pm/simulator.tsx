@@ -272,9 +272,11 @@ function SchemaViewer({ tables }: { tables: Scenario["challenge"]["schema"] }) {
 function SQLEditor({
   value,
   onChange,
+  placeholder = "-- Write your SQL query here...",
 }: {
   value: string;
   onChange: (v: string) => void;
+  placeholder?: string;
 }) {
   const lines = value.split("\n");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -329,7 +331,8 @@ function SQLEditor({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="min-h-[220px] flex-1 resize-none bg-transparent p-3 text-[11px] leading-[1.6rem] text-emerald-300/90 outline-none placeholder:text-muted/30"
+          placeholder={placeholder}
+          className="min-h-[220px] flex-1 resize-none bg-transparent p-3 text-[11px] leading-[1.6rem] text-emerald-300/90 outline-none placeholder:text-muted/40"
           spellCheck={false}
           autoComplete="off"
           autoCorrect="off"
@@ -591,24 +594,24 @@ function InsightReview({
       {/* Score banner */}
       <div
         className={cn(
-          "flex items-center gap-4 rounded-2xl border px-6 py-5",
+          "flex flex-wrap items-center gap-4 rounded-2xl border px-5 py-4 sm:flex-nowrap sm:px-6 sm:py-5",
           isCorrect
             ? "border-emerald-500/30 bg-emerald-500/10"
             : "border-amber-500/30 bg-amber-500/10"
         )}
       >
         <span className="text-4xl">{isCorrect ? "🎯" : "💡"}</span>
-        <div className="flex-1">
-          <h3 className="font-semibold">
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-sm sm:text-base">
             {isCorrect ? "Excellent PM Thinking!" : "Good Attempt — Here's the PM Perspective"}
           </h3>
-          <p className="mt-0.5 text-sm text-muted">
+          <p className="mt-0.5 text-xs sm:text-sm text-muted">
             {isCorrect
               ? "You identified the right business lever. Here's the full senior PM review."
               : "Not quite — but this is exactly how you build PM instinct. Read the full breakdown."}
           </p>
         </div>
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center ml-auto">
           <span
             className={cn(
               "text-2xl font-bold",
@@ -623,20 +626,20 @@ function InsightReview({
 
       {/* Tabs */}
       <div className="rounded-2xl border border-border bg-surface shadow-soft">
-        <div className="flex border-b border-border">
+        <div className="flex border-b border-border overflow-x-auto">
           {tabs.map(({ key, label, icon: Icon }) => (
             <button
               key={key}
               onClick={() => setTab(key)}
               className={cn(
-                "flex flex-1 items-center justify-center gap-2 py-3.5 text-xs font-semibold transition-colors",
+                "flex flex-1 flex-shrink-0 items-center justify-center gap-2 py-3.5 text-xs font-semibold transition-colors whitespace-nowrap px-3",
                 tab === key
                   ? "border-b-2 border-brand text-brand"
                   : "text-muted hover:text-fg"
               )}
             >
-              <Icon className="h-3.5 w-3.5" />
-              {label}
+              <Icon className="h-3.5 w-3.5 flex-shrink-0" />
+              <span className="hidden sm:inline">{label}</span>
             </button>
           ))}
         </div>
@@ -739,7 +742,7 @@ function InsightReview({
       </div>
 
       {/* Reset button */}
-      <div className="flex items-center justify-center gap-4">
+      <div className="flex flex-wrap items-center justify-center gap-4">
         <button
           onClick={onReset}
           className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-6 py-2.5 text-sm font-medium text-muted transition-colors hover:text-fg"
@@ -786,7 +789,8 @@ type Phase = "solving" | "pm-question" | "review";
 
 export function ActiveSimulator({ scenario }: { scenario: Scenario }) {
   const { challenge } = scenario;
-  const [query, setQuery] = useState(challenge.starterQuery);
+  const initialQuery = scenario.sqlConcept ? "" : challenge.starterQuery;
+  const [query, setQuery] = useState(initialQuery);
   const [phase, setPhase] = useState<Phase>("solving");
   const [running, setRunning] = useState(false);
   const [queryRan, setQueryRan] = useState(false);
@@ -823,7 +827,7 @@ export function ActiveSimulator({ scenario }: { scenario: Scenario }) {
   };
 
   const handleReset = () => {
-    setQuery(challenge.starterQuery);
+    setQuery(initialQuery);
     setPhase("solving");
     setQueryRan(false);
     setShowSolution(false);
@@ -922,10 +926,18 @@ export function ActiveSimulator({ scenario }: { scenario: Scenario }) {
             SQL Editor
           </p>
 
-          <SQLEditor value={query} onChange={setQuery} />
+          <SQLEditor
+            value={query}
+            onChange={setQuery}
+            placeholder={
+              scenario.sqlConcept
+                ? `-- ${scenario.sqlConcept} practice\n-- Write your query here and click Run Query`
+                : undefined
+            }
+          />
 
           {/* Action buttons */}
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <button
               onClick={handleRunQuery}
               disabled={running || queryRan}

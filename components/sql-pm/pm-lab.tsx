@@ -297,8 +297,8 @@ function ScenarioCard({
       </div>
 
       {/* Footer */}
-      <div className="mt-5 flex items-center justify-between border-t border-border/60 pt-4 text-xs">
-        <div className="flex items-center gap-3">
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-y-2 border-t border-border/60 pt-4 text-xs">
+        <div className="flex flex-wrap items-center gap-2">
           <span className="flex items-center gap-1 text-muted">
             <Clock className="h-3.5 w-3.5" />
             {scenario.estimatedMinutes} min
