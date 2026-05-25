@@ -17,6 +17,7 @@ import {
   Play,
 } from "lucide-react";
 import { SCENARIOS, type Scenario } from "./data";
+import { FOUNDATION_SCENARIOS } from "./foundation-data";
 import { ActiveSimulator } from "./simulator";
 import { cn } from "@/lib/utils";
 
@@ -207,10 +208,12 @@ function ScenarioCard({
   scenario,
   index,
   onSelect,
+  conceptBadge,
 }: {
   scenario: Scenario;
   index: number;
   onSelect: (s: Scenario) => void;
+  conceptBadge?: string;
 }) {
   const diffColor: Record<string, string> = {
     Beginner: "text-emerald-500 bg-emerald-500/10 ring-emerald-500/20",
@@ -265,6 +268,16 @@ function ScenarioCard({
       <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">
         {scenario.description}
       </p>
+
+      {/* SQL Concept badge (foundation scenarios only) */}
+      {conceptBadge && (
+        <div className="mt-3">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand/10 px-2.5 py-0.5 text-[11px] font-semibold text-brand">
+            <Database className="h-3 w-3" />
+            {conceptBadge}
+          </span>
+        </div>
+      )}
 
       {/* Tags */}
       <div className="mt-4 flex flex-wrap gap-1.5">
@@ -471,6 +484,37 @@ function ScenarioPicker({ onSelect }: { onSelect: (s: Scenario) => void }) {
   );
 }
 
+// ─── Foundation scenarios picker ──────────────────────────────────────────────
+function FoundationPicker({ onSelect }: { onSelect: (s: Scenario) => void }) {
+  return (
+    <section className="pb-16 pt-4" id="foundations">
+      <div className="mb-10 text-center">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-500">
+          SQL Foundations
+        </p>
+        <h2 className="mt-2 text-2xl font-semibold tracking-tight md:text-3xl">
+          Learn One Concept at a Time
+        </h2>
+        <p className="mx-auto mt-3 max-w-lg text-[15px] text-muted">
+          20 beginner-friendly scenarios, each focused on a single SQL concept.
+          Perfect for building intuition from scratch before tackling complex simulations.
+        </p>
+      </div>
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {FOUNDATION_SCENARIOS.map((scenario, i) => (
+          <ScenarioCard
+            key={scenario.id}
+            scenario={scenario}
+            index={i}
+            onSelect={onSelect}
+            conceptBadge={scenario.sqlConcept}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
 // ─── Root orchestrator ────────────────────────────────────────────────────────
 export function PMAnalyticsLab() {
   const [activeScenario, setActiveScenario] = useState<Scenario | null>(null);
@@ -522,6 +566,7 @@ export function PMAnalyticsLab() {
             <LabHero onStart={scrollToScenarios} />
             <HowItWorks />
             <ScenarioPicker onSelect={handleSelectScenario} />
+            <FoundationPicker onSelect={handleSelectScenario} />
             <BadgeShowcase />
           </motion.div>
         )}

@@ -63,6 +63,7 @@ export interface Scenario {
   sqlDifficulty: SQLDifficulty;
   pmDifficulty: SQLDifficulty;
   skills: string[];
+  sqlConcept?: string;
   challenge: Challenge;
 }
 
