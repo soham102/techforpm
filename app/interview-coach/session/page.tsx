@@ -60,15 +60,17 @@ const INITIAL_SCORES: ScoreMetric[] = [
 ];
 
 const AI_FOLLOWUPS = [
-  "Good start! Can you walk me through how you'd prioritise this feature against other Uber initiatives?",
-  "Interesting. How would you define success metrics for this feature? What's your north star?",
-  "Let's pressure test this — what are the biggest risks to launching this, and how would you mitigate them?",
+  "Good framing! Now let's go deeper — how would you identify the primary user segment for this feature? What research methods would you use?",
+  "Nice. What metrics would you track to measure success? Walk me through your north star metric and the supporting guardrail metrics.",
+  "Solid metrics. What tradeoffs would you consider when building this — think safety, driver incentives, and Uber's revenue model.",
+  "Great analysis! Finally — how would you launch this MVP? Outline your go-to-market strategy and rollout phases.",
 ];
 
 const FEEDBACK_AFTER: Record<number, Partial<Record<string, number>>> = {
-  1: { "Product Sense": 5, Communication: 4, Structure: 5 },
-  2: { "Product Sense": 7, Communication: 6, Structure: 7 },
-  3: { "Product Sense": 8, Communication: 8, Structure: 9 },
+  1: { "Product Sense": 4, Communication: 3, Structure: 4 },
+  2: { "Product Sense": 6, Communication: 6, Structure: 6 },
+  3: { "Product Sense": 7, Communication: 7, Structure: 8 },
+  4: { "Product Sense": 9, Communication: 8, Structure: 9 },
 };
 
 function now(secs: number) {
@@ -130,7 +132,7 @@ export default function SessionPage() {
       setAiTyping(false);
 
       /* Update scores */
-      const updates = FEEDBACK_AFTER[Math.min(turnIdx, 3)];
+      const updates = FEEDBACK_AFTER[Math.min(turnIdx, 4)];
       if (updates) {
         setScores((prev) =>
           prev.map((s) =>
@@ -297,7 +299,7 @@ export default function SessionPage() {
             <div className="flex flex-col gap-2">
               <InfoRow icon="◈" label="Round" value="Product Sense" />
               <InfoRow icon="◉" label="Difficulty" value="Senior PM" />
-              <InfoRow icon="◎" label="Q&A" value={`${userTurn} / 3 answered`} />
+              <InfoRow icon="◎" label="Q&A" value={`${userTurn} / 4 answered`} />
               <InfoRow icon="⏱" label="Time" value={now(elapsed)} />
             </div>
           </div>
@@ -309,8 +311,12 @@ export default function SessionPage() {
               {userTurn === 0
                 ? "Start by clarifying goals and users before jumping to solutions."
                 : userTurn === 1
-                ? "Quantify your impact — attach numbers to your success metrics."
-                : "Great depth! Make sure to address trade-offs explicitly."}
+                ? "Use segmentation frameworks — demographics, psychographics, or jobs-to-be-done."
+                : userTurn === 2
+                ? "Quantify your metrics. Attach numbers and time-bounds to your north star."
+                : userTurn === 3
+                ? "Great depth! Be explicit about trade-offs and stakeholder impact."
+                : "Excellent session! Review your scores and focus on your lowest dimension next time."}
             </p>
           </div>
         </aside>
@@ -322,9 +328,19 @@ export default function SessionPage() {
 /* ── Sub-components ── */
 
 function ChatBubble({ msg }: { msg: Message }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
   const isAI = msg.sender === "ai";
   return (
-    <div className={`flex gap-3 ${isAI ? "justify-start" : "justify-end"}`}>
+    <div
+      className={`flex gap-3 transition-all duration-300 ease-out ${
+        mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+      } ${isAI ? "justify-start" : "justify-end"}`}
+    >
       {isAI && (
         <div className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-violet-600/20 border border-violet-500/20 text-[10px] font-bold text-violet-400">
           AI
@@ -350,17 +366,29 @@ function ChatBubble({ msg }: { msg: Message }) {
 }
 
 function TypingIndicator() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
   return (
-    <div className="flex items-center gap-3">
+    <div
+      className={`flex items-center gap-3 transition-all duration-300 ease-out ${
+        mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+      }`}
+    >
       <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-violet-600/20 border border-violet-500/20 text-[10px] font-bold text-violet-400">
         AI
       </div>
-      <div className="flex items-center gap-1.5 rounded-2xl rounded-tl-sm border border-white/8 bg-white/[0.04] px-4 py-3">
+      <div className="flex items-center gap-1.5 rounded-2xl rounded-tl-sm border border-white/8 bg-white/[0.04] px-4 py-3.5">
         {[0, 1, 2].map((i) => (
           <span
             key={i}
             className="h-1.5 w-1.5 rounded-full bg-zinc-500"
-            style={{ animation: `pulse 1.2s ease-in-out ${i * 0.2}s infinite` }}
+            style={{
+              animation: `bounce 1s ease-in-out ${i * 0.18}s infinite`,
+            }}
           />
         ))}
       </div>
