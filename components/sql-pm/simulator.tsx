@@ -83,7 +83,7 @@ function validateSQL(query: string, scenario: Scenario): ValidationResult {
   const stripped = stripComments(query);
   const upper = stripped.toUpperCase().replace(/\s+/g, " ").trim();
 
-  // 1. Basic syntax
+  // 1. Basic syntax — checked first so these always surface before logic errors
   if (!stripped) {
     return { ok: false, error: "Query is empty — write a SQL SELECT statement to continue." };
   }
@@ -93,13 +93,24 @@ function validateSQL(query: string, scenario: Scenario): ValidationResult {
   if (!upper.includes(" FROM ") && !/\bFROM$/.test(upper)) {
     return { ok: false, error: "Missing FROM clause — specify which table to query." };
   }
+  // Unclosed string literals
+  const singleQuotes = (stripped.match(/'/g) ?? []).length;
+  if (singleQuotes % 2 !== 0) {
+    return { ok: false, error: "Unclosed string — you have an unmatched single quote (')." };
+  }
+  const doubleQuotes = (stripped.match(/"/g) ?? []).length;
+  if (doubleQuotes % 2 !== 0) {
+    return { ok: false, error: 'Unclosed string — you have an unmatched double quote (").' };
+  }
   const opens = (stripped.match(/\(/g) ?? []).length;
   const closes = (stripped.match(/\)/g) ?? []).length;
   if (opens !== closes) {
     return { ok: false, error: `Unmatched parentheses — ${opens} opening '(' vs ${closes} closing ')'.` };
   }
 
-  // 2. Concept fast-fail for foundation scenarios
+  // 2. Foundation scenarios: only verify the target concept is present, then pass.
+  //    Do NOT enforce the full solution structure — the solution may include extra
+  //    clauses (e.g. ORDER BY for readability) that aren't part of the core lesson.
   if (scenario.sqlConcept) {
     const conceptRe: Record<string, { re: RegExp; hint: string }> = {
       "SELECT *":       { re: /SELECT\s+\*/,                  hint: "Use SELECT * to retrieve all columns." },
@@ -127,11 +138,11 @@ function validateSQL(query: string, scenario: Scenario): ValidationResult {
     if (cr && !cr.re.test(upper)) {
       return { ok: false, error: `Incorrect query — ${cr.hint}` };
     }
+    return { ok: true };
   }
 
-  // 3. Solution-based structural check
-  // Every SQL clause present in the ideal solution must appear in the user's query.
-  // This catches e.g. writing SELECT * without the required WHERE clause.
+  // 3. Business scenarios: every structural clause in the ideal solution must
+  //    appear in the user's query (checks for missing WHERE, GROUP BY, JOIN, etc.)
   const required = getStructuralElements(scenario.challenge.solution);
   const provided = getStructuralElements(query);
   for (const el of Array.from(required)) {
