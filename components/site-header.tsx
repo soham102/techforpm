@@ -52,6 +52,12 @@ export function SiteHeader() {
             Interview Prep
           </Link>
           <Link
+            href="/sprint-planning"
+            className="hidden rounded-full px-4 py-2 text-sm font-medium text-muted transition-colors hover:text-fg sm:block"
+          >
+            Sprint Planning
+          </Link>
+          <Link
             href="/contact"
             className="hidden rounded-full px-4 py-2 text-sm font-medium text-muted transition-colors hover:text-fg sm:block"
           >
