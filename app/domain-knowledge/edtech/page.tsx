@@ -55,7 +55,7 @@ const CONCEPTS = [
     icon: GitMerge,
     difficulty: "Beginner" as const,
     minutes: 10,
-    available: false,
+    available: true,
     color: "text-emerald-400",
     bg: "bg-emerald-500/10",
     border: "border-emerald-500/20",
@@ -317,9 +317,9 @@ export default function EdTechPage() {
             More simulations launching soon
           </p>
           <p className="text-sm text-muted">
-            Adaptive Learning, EPUB, Accessibility, Publishing Workflow, and 4
-            more are in development — built with the same interactive,
-            simulation-first philosophy.
+            Adaptive Learning, EPUB, Accessibility, and 4 more are in
+            development — built with the same interactive, simulation-first
+            philosophy.
           </p>
         </motion.div>
       </section>
