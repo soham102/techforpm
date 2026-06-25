@@ -10,13 +10,11 @@ import {
   CheckCircle2,
   Monitor,
   Server,
-  Package,
   RefreshCw,
   Play,
   RotateCcw,
   Wifi,
   WifiOff,
-  Database,
 } from "lucide-react";
 
 // ─── Quiz Data ─────────────────────────────────────────────────────────────────
@@ -326,6 +324,13 @@ function CrashOverlay({ onContinue }: { onContinue: () => void }) {
       className="fixed inset-0 z-50 flex items-center justify-center bg-bg/96 backdrop-blur-md"
     >
       <div className="mx-auto max-w-md px-6 text-center">
+        <motion.p
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6 text-xs font-semibold uppercase tracking-widest text-brand"
+        >
+          Scene 2
+        </motion.p>
         {/* Animated browser window */}
         <motion.div
           initial={{ y: 0, opacity: 1, scale: 1, rotate: 0 }}
@@ -436,6 +441,14 @@ function ReconnectScreen({ onDone }: { onDone: () => void }) {
         <motion.p
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
+          className="mb-2 text-xs font-semibold uppercase tracking-widest text-brand"
+        >
+          Scene 3
+        </motion.p>
+        <motion.p
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
           className="mb-8 text-sm font-semibold uppercase tracking-[0.2em] text-muted"
         >
           Student returns after 30 minutes...
@@ -445,7 +458,6 @@ function ReconnectScreen({ onDone }: { onDone: () => void }) {
         <div className="mb-8 space-y-3 text-left">
           {steps.map((s, i) => {
             const Icon = s.icon;
-            const isActive = step === i + 1;
             const isDone = step > i + 1;
             return (
               <AnimatePresence key={s.label}>
@@ -612,7 +624,7 @@ function ScormFlowSection() {
     <section className="rounded-2xl border border-border/70 bg-surface p-6">
       <div className="mb-6">
         <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-brand">
-          Scene 5 · How SCORM Works
+          Scene 4 · How SCORM Works
         </p>
         <h2 className="text-xl font-bold text-fg">
           Data travels between Student, Package, and LMS
@@ -822,7 +834,7 @@ function InteractivePlayground() {
       <div className="mb-6 flex items-start justify-between">
         <div>
           <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-brand">
-            Scene 6 · Interactive Playground
+            Scene 5 · Interactive Playground
           </p>
           <h2 className="text-xl font-bold text-fg">Try it yourself</h2>
           <p className="mt-1.5 text-sm text-muted">
@@ -1011,7 +1023,7 @@ function RealWorldSection() {
     <section className="rounded-2xl border border-border/70 bg-surface p-6">
       <div className="mb-6">
         <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-brand">
-          Scene 7 · Real World
+          Scene 6 · Real World
         </p>
         <h2 className="text-xl font-bold text-fg">
           Where you&apos;ve already used SCORM
@@ -1095,7 +1107,7 @@ function PmTakeawaysSection() {
     <section className="rounded-2xl border border-border/70 bg-surface p-6">
       <div className="mb-6 text-center">
         <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-brand">
-          Scene 8 · Product Manager Takeaway
+          Scene 7 · Product Manager Takeaway
         </p>
         <h2 className="text-2xl font-bold text-fg">Why SCORM matters to PMs</h2>
         <p className="mx-auto mt-2 max-w-xl text-sm text-muted">
@@ -1303,10 +1315,18 @@ export default function ScormPage() {
         </div>
 
         <div className="relative mx-auto max-w-4xl px-5 pb-24 pt-4 text-center">
-          <motion.div
+          <motion.p
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.4 }}
+            className="mb-3 text-xs font-semibold uppercase tracking-widest text-brand hidden"
+          >
+            Scene 1
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.05 }}
             className="mb-6 inline-flex items-center gap-2 rounded-full border border-brand/30 bg-brand/10 px-4 py-1.5"
           >
             <BookOpen className="h-3.5 w-3.5 text-brand" />
@@ -1393,7 +1413,7 @@ export default function ScormPage() {
       <section id="quiz-section" className="mx-auto max-w-5xl px-5 py-12">
         <div className="mb-5 flex items-center gap-3">
           <span className="text-xs font-semibold uppercase tracking-widest text-brand">
-            Scene 2
+            Scene 1
           </span>
           <div className="h-px flex-1 bg-border/50" />
           <span className="text-xs text-muted">
