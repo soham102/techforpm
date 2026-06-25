@@ -1420,13 +1420,22 @@ export default function ScormPage() {
         )}
       </AnimatePresence>
 
-      {/* ── Scenes 5–8: Always visible on scroll ── */}
-      <div className="mx-auto max-w-5xl space-y-8 px-5 pb-24 pt-2">
-        <ScormFlowSection />
-        <InteractivePlayground />
-        <RealWorldSection />
-        <PmTakeawaysSection />
-      </div>
+      {/* ── Scenes 5–8: Only revealed after quiz is complete ── */}
+      <AnimatePresence>
+        {phase === "complete" && (
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="mx-auto max-w-5xl space-y-8 px-5 pb-24 pt-2"
+          >
+            <ScormFlowSection />
+            <InteractivePlayground />
+            <RealWorldSection />
+            <PmTakeawaysSection />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── Crash Overlay ── */}
       <AnimatePresence>
