@@ -41,7 +41,7 @@ const CONCEPTS = [
     icon: Link2,
     difficulty: "Intermediate" as const,
     minutes: 12,
-    available: false,
+    available: true,
     color: "text-violet-400",
     bg: "bg-violet-500/10",
     border: "border-violet-500/20",
@@ -317,9 +317,9 @@ export default function EdTechPage() {
             More simulations launching soon
           </p>
           <p className="text-sm text-muted">
-            LTI, Adaptive Learning, EPUB, Accessibility, and 5 more are in
-            development — built with the same interactive, simulation-first
-            philosophy.
+            Adaptive Learning, EPUB, Accessibility, Publishing Workflow, and 4
+            more are in development — built with the same interactive,
+            simulation-first philosophy.
           </p>
         </motion.div>
       </section>
