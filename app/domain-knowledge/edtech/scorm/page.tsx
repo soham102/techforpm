@@ -1212,6 +1212,9 @@ export default function ScormPage() {
       suspend_data: '{"started":true}',
     }));
     flash(["lesson_status", "location", "suspend_data"]);
+    setTimeout(() => {
+      document.getElementById("quiz-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
   };
 
   const handleAnswer = useCallback(
@@ -1386,56 +1389,63 @@ export default function ScormPage() {
         </div>
       </section>
 
-      {/* ── Scene 2: Quiz ── */}
-      <AnimatePresence>
-        {phase !== "intro" && (
-          <motion.section
-            initial={{ opacity: 0, y: 32 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mx-auto max-w-5xl px-5 py-12"
-          >
-            <div className="mb-5 flex items-center gap-3">
-              <span className="text-xs font-semibold uppercase tracking-widest text-brand">
-                Scene 2
-              </span>
-              <div className="h-px flex-1 bg-border/50" />
-              <span className="text-xs text-muted">
-                Watch SCORM update every answer →
-              </span>
-            </div>
+      {/* ── Scene 2: Quiz — always rendered, locked until Start Quiz ── */}
+      <section id="quiz-section" className="mx-auto max-w-5xl px-5 py-12">
+        <div className="mb-5 flex items-center gap-3">
+          <span className="text-xs font-semibold uppercase tracking-widest text-brand">
+            Scene 2
+          </span>
+          <div className="h-px flex-1 bg-border/50" />
+          <span className="text-xs text-muted">
+            Watch SCORM update every answer →
+          </span>
+        </div>
 
-            {phase === "complete" ? (
-              <CompleteCard score={scormData.score} />
-            ) : (
-              <QuizSection
-                currentQ={currentQ}
-                restored={restored}
-                onAnswer={handleAnswer}
-                scormData={scormData}
-                highlight={highlight}
-              />
-            )}
-          </motion.section>
-        )}
-      </AnimatePresence>
-
-      {/* ── Scenes 5–8: Only revealed after quiz is complete ── */}
-      <AnimatePresence>
-        {phase === "complete" && (
+        {phase === "intro" ? (
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="mx-auto max-w-5xl space-y-8 px-5 pb-24 pt-2"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-surface/60 py-16 text-center"
           >
-            <ScormFlowSection />
-            <InteractivePlayground />
-            <RealWorldSection />
-            <PmTakeawaysSection />
+            <div className="mb-4 grid h-14 w-14 place-items-center rounded-2xl border border-brand/30 bg-brand/10">
+              <Play className="h-6 w-6 text-brand" />
+            </div>
+            <p className="text-base font-semibold text-fg mb-1">
+              Your quiz starts here
+            </p>
+            <p className="text-sm text-muted mb-5">
+              Click <strong className="text-fg">Start Quiz</strong> above to begin the SCORM simulation
+            </p>
+            <button
+              onClick={handleStart}
+              className="inline-flex items-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-bold text-white shadow-glow hover:shadow-[0_0_24px_rgba(99,102,241,0.5)] transition-shadow"
+            >
+              <Play className="h-4 w-4" />
+              Start Quiz
+            </button>
           </motion.div>
+        ) : phase === "complete" ? (
+          <CompleteCard score={scormData.score} />
+        ) : (
+          <QuizSection
+            currentQ={currentQ}
+            restored={restored}
+            onAnswer={handleAnswer}
+            scormData={scormData}
+            highlight={highlight}
+          />
         )}
-      </AnimatePresence>
+      </section>
+
+      {/* ── Scenes 5–8: Always visible on scroll ── */}
+      <div className="mx-auto max-w-5xl space-y-8 px-5 pb-24 pt-2">
+        <ScormFlowSection />
+        <InteractivePlayground />
+        <RealWorldSection />
+        <PmTakeawaysSection />
+      </div>
 
       {/* ── Crash Overlay ── */}
       <AnimatePresence>
