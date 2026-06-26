@@ -83,7 +83,7 @@ const CONCEPTS = [
     icon: Eye,
     difficulty: "Intermediate" as const,
     minutes: 14,
-    available: false,
+    available: true,
     color: "text-cyan-400",
     bg: "bg-cyan-500/10",
     border: "border-cyan-500/20",
