@@ -763,11 +763,8 @@ function HearingScene({ onContinue }: { onContinue: () => void }) {
   const [transcriptOpen, setTranscriptOpen] = useState(false);
   const [tick, setTick] = useState(0);
   const reduce = useReducedMotion();
-
-  useEffect(() => {
-    const id = setInterval(() => setTick((p) => p + 1), 1000);
-    return () => clearInterval(id);
-  }, []);
+  const lineIndexRef = useRef(0);
+  const synthRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   const CAPTIONS = [
     "An API, or Application Programming Interface,",
@@ -776,6 +773,31 @@ function HearingScene({ onContinue }: { onContinue: () => void }) {
     "and bringing it to the kitchen.",
     "The API is the messenger between your app and the server.",
   ];
+
+  const speakNext = useCallback(() => {
+    if (typeof window === "undefined" || !window.speechSynthesis) return;
+    const line = CAPTIONS[lineIndexRef.current % CAPTIONS.length];
+    lineIndexRef.current += 1;
+    const utter = new SpeechSynthesisUtterance(line);
+    utter.rate = 0.95;
+    utter.pitch = 1;
+    utter.onend = () => speakNext();
+    synthRef.current = utter;
+    window.speechSynthesis.speak(utter);
+  }, []);
+
+  useEffect(() => {
+    speakNext();
+    return () => {
+      window.speechSynthesis?.cancel();
+    };
+  }, [speakNext]);
+
+  useEffect(() => {
+    const id = setInterval(() => setTick((p) => p + 1), 1000);
+    return () => clearInterval(id);
+  }, []);
+
   const captionLine = CAPTIONS[tick % CAPTIONS.length];
 
   return (
