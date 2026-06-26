@@ -111,7 +111,7 @@ const CONCEPTS = [
     icon: BookMarked,
     difficulty: "Beginner" as const,
     minutes: 10,
-    available: false,
+    available: true,
     color: "text-sky-400",
     bg: "bg-sky-500/10",
     border: "border-sky-500/20",
@@ -317,7 +317,7 @@ export default function EdTechPage() {
             More simulations launching soon
           </p>
           <p className="text-sm text-muted">
-            EPUB, Back to School, Rubrics, and more are in development —
+            EPUB, Rubrics, and more are in development —
             built with the same interactive, simulation-first philosophy.
           </p>
         </motion.div>
