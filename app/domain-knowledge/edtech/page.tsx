@@ -97,7 +97,7 @@ const CONCEPTS = [
     icon: Eraser,
     difficulty: "Intermediate" as const,
     minutes: 12,
-    available: false,
+    available: true,
     color: "text-amber-400",
     bg: "bg-amber-500/10",
     border: "border-amber-500/20",
@@ -317,7 +317,7 @@ export default function EdTechPage() {
             More simulations launching soon
           </p>
           <p className="text-sm text-muted">
-            EPUB, Accessibility, Clean Slate, and 3 more are in development —
+            EPUB, Back to School, Rubrics, and more are in development —
             built with the same interactive, simulation-first philosophy.
           </p>
         </motion.div>
