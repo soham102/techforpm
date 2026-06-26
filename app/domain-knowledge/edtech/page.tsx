@@ -69,7 +69,7 @@ const CONCEPTS = [
     icon: Brain,
     difficulty: "Advanced" as const,
     minutes: 18,
-    available: false,
+    available: true,
     color: "text-rose-400",
     bg: "bg-rose-500/10",
     border: "border-rose-500/20",
@@ -317,9 +317,8 @@ export default function EdTechPage() {
             More simulations launching soon
           </p>
           <p className="text-sm text-muted">
-            Adaptive Learning, EPUB, Accessibility, and 4 more are in
-            development — built with the same interactive, simulation-first
-            philosophy.
+            EPUB, Accessibility, Clean Slate, and 3 more are in development —
+            built with the same interactive, simulation-first philosophy.
           </p>
         </motion.div>
       </section>
