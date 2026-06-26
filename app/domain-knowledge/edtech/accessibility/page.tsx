@@ -7,7 +7,6 @@ import {
   ArrowLeft,
   ArrowRight,
   Eye,
-  EyeOff,
   Volume2,
   VolumeX,
   Keyboard,
@@ -22,22 +21,13 @@ import {
   ChevronRight,
   ChevronDown,
   Play,
-  Monitor,
-  Users,
-  Globe,
-  TrendingUp,
-  Heart,
-  BarChart3,
   Activity,
   Crosshair,
-  BookOpen,
   Layers,
   FileText,
   Film,
-  ImageIcon,
+  Image as ImageIcon,
   Type,
-  Minus,
-  Plus,
 } from "lucide-react";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -1159,8 +1149,6 @@ export default function AccessibilityPage() {
   const [fixingAll, setFixingAll] = useState(false);
   const [expandedProduct, setExpandedProduct] = useState<string | null>(null);
   const [expandedWcag, setExpandedWcag] = useState<string | null>(null);
-  const [learnerCount, setLearnerCount] = useState(650000);
-  const [a11yEnabled, setA11yEnabled] = useState(false);
   const exploreSectionRef = useRef<HTMLDivElement>(null);
 
   const [a11yToggles, setA11yToggles] = useState({
@@ -1661,7 +1649,7 @@ export default function AccessibilityPage() {
 
             {/* Issues list */}
             <div className="space-y-2">
-              {issues.map((issue, i) => {
+              {issues.map((issue) => {
                 const Icon = issue.icon;
                 return (
                   <motion.div
@@ -1829,7 +1817,6 @@ export default function AccessibilityPage() {
           </motion.h2>
           <div className="grid gap-4 sm:grid-cols-2">
             {WCAG.map((w, i) => {
-              const Icon = w.icon;
               return (
                 <motion.div
                   key={w.word}
