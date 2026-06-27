@@ -32,43 +32,44 @@ export function SiteHeader() {
           </span>
         </Link>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-0.5">
           <Link
             href="/"
-            className="hidden rounded-full px-4 py-2 text-sm font-medium text-muted transition-colors hover:text-fg sm:block"
+            className="hidden rounded-full px-3 py-2 text-sm font-medium text-muted transition-colors hover:text-fg sm:block"
           >
             Tech Concepts
           </Link>
           <Link
             href="/sql-for-pms"
-            className="hidden rounded-full px-4 py-2 text-sm font-medium text-muted transition-colors hover:text-fg sm:block"
+            className="hidden rounded-full px-3 py-2 text-sm font-medium text-muted transition-colors hover:text-fg sm:block"
           >
             SQL for PMs
           </Link>
           <Link
             href="/interview-prep"
-            className="hidden rounded-full px-4 py-2 text-sm font-medium text-muted transition-colors hover:text-fg sm:block"
+            className="hidden rounded-full px-3 py-2 text-sm font-medium text-muted transition-colors hover:text-fg sm:block"
           >
             Interview Prep
           </Link>
           <Link
             href="/sprint-planning"
-            className="hidden rounded-full px-4 py-2 text-sm font-medium text-muted transition-colors hover:text-fg sm:block"
+            className="hidden rounded-full px-3 py-2 text-sm font-medium text-muted transition-colors hover:text-fg sm:block"
           >
             Sprint Planning
           </Link>
           <Link
             href="/domain-knowledge"
-            className="hidden rounded-full px-4 py-2 text-sm font-medium text-muted transition-colors hover:text-fg sm:block"
+            className="hidden rounded-full px-3 py-2 text-sm font-medium text-muted transition-colors hover:text-fg sm:block"
           >
             Domain Knowledge
           </Link>
           <Link
             href="/contact"
-            className="hidden rounded-full px-4 py-2 text-sm font-medium text-muted transition-colors hover:text-fg sm:block"
+            className="hidden rounded-full px-3 py-2 text-sm font-medium text-muted transition-colors hover:text-fg sm:block"
           >
             Contact
           </Link>
+          <span className="mx-1" />
           <ThemeToggle />
           <UserMenu />
         </div>
