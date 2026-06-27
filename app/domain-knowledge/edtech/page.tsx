@@ -125,7 +125,7 @@ const CONCEPTS = [
     icon: BookOpen,
     difficulty: "Beginner" as const,
     minutes: 8,
-    available: false,
+    available: true,
     color: "text-pink-400",
     bg: "bg-pink-500/10",
     border: "border-pink-500/20",
@@ -317,7 +317,7 @@ export default function EdTechPage() {
             More simulations launching soon
           </p>
           <p className="text-sm text-muted">
-            EPUB, Rubrics, and more are in development —
+            Rubrics and more are in development —
             built with the same interactive, simulation-first philosophy.
           </p>
         </motion.div>
